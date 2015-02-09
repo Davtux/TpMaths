@@ -1,59 +1,25 @@
 package graphe;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.Getter;
+
 public class Graphe {
+	static final int MAX_SOMMET = 52;
 	private int nombreSommet;
 	private int nombreArete;
-	private Sommet sommets[];
-	private Arete aretes[];
-	private boolean matriceAdjacence[][];
+	private @Getter final Sommet sommets[];
+	private @Getter final Arete aretes[];
+	private @Getter final boolean matriceAdjacence[][];
 
 	public Graphe() {
 		super();
-		this.sommets = new Sommet[52];
+		this.sommets = new Sommet[MAX_SOMMET];
 		this.aretes = new Arete[100];
 		this.nombreArete = 0;
 		this.nombreSommet = 0;
-		this.matriceAdjacence = new boolean[52][52];
-	}
-
-	public boolean[][] getMatriceAdjacence() {
-		return matriceAdjacence;
-	}
-
-	public void setMatriceAdjacence(boolean[][] matriceAdjacence) {
-		this.matriceAdjacence = matriceAdjacence;
-	}
-
-	public int getNombreSommet() {
-		return nombreSommet;
-	}
-
-	public void setNombreSommet(int nombreSommet) {
-		this.nombreSommet = nombreSommet;
-	}
-
-	public int getNombreArete() {
-		return nombreArete;
-	}
-
-	public void setNombreArete(int nombreArete) {
-		this.nombreArete = nombreArete;
-	}
-
-	public Sommet[] getSommets() {
-		return sommets;
-	}
-
-	public void setSommets(Sommet[] sommets) {
-		this.sommets = sommets;
-	}
-
-	public Arete[] getAretes() {
-		return aretes;
-	}
-
-	public void setAretes(Arete[] aretes) {
-		this.aretes = aretes;
+		this.matriceAdjacence = new boolean[MAX_SOMMET][MAX_SOMMET];
 	}
 
 	public void addSommet(Sommet sommet) {
@@ -65,6 +31,7 @@ public class Graphe {
 		this.aretes[this.nombreArete] = arete;
 		this.nombreArete += 1;
 		this.majMatrice(arete.getInitial(), arete.getFin());
+		this.majMatrice(arete.getFin(), arete.getInitial());
 	}
 
 	public void majMatrice(Sommet initial, Sommet fin) {
@@ -75,7 +42,7 @@ public class Graphe {
 	}
 
 	public int getIdSommetByNom(String s) {
-		for (int i = 0; i < 52; i++) {
+		for (int i = 0; i < MAX_SOMMET; i++) {
 			if (this.sommets[i] != null) {
 				if (s == sommets[i].getNom()) {
 					return i;
@@ -86,7 +53,7 @@ public class Graphe {
 	}
 
 	public Sommet getSommetByNom(String s) {
-		for (int i = 0; i < 52; i++) {
+		for (int i = 0; i < MAX_SOMMET; i++) {
 			if (this.sommets[i] != null) {
 				if (this.sommets[i].getNom().equals(s)) {
 					return this.sommets[i];
@@ -114,10 +81,75 @@ public class Graphe {
 		}
 		return arete;
 	}
-	
-	public Sommet[] getVoisinSommetByNom(String nom){
-		Sommet s = this.getSommetByNom(nom);
-		
+
+	public List<Sommet> getVoisinBySommet(Sommet sommet) {
+		List<Sommet> voisins = new ArrayList<Sommet>();
+
+		for (int i = 0; i < this.nombreArete; i++) {
+			Arete arete = this.aretes[i];
+			if (arete.getInitial() == sommet)
+				voisins.add(arete.getFin());
+			if (arete.getFin() == sommet)
+				voisins.add(arete.getInitial());
+		}
+
+		return voisins;
 	}
 
+	public List<Sommet> parcoursEnProfondeur(Sommet sommet) {
+		sommet.setMarque(true);
+		List<Sommet> listeProfondeur = new ArrayList<Sommet>();
+		listeProfondeur.add(sommet);
+
+		for (Sommet s : this.getVoisinBySommet(sommet)) {
+			if (!s.isMarque()) {
+				listeProfondeur.addAll(this.parcoursEnProfondeur(s));
+			}
+		}
+		return listeProfondeur;
+	}
+
+	public List<Sommet> parcoursEnLargeur(Sommet sommet) {
+		List<Sommet> listeLargeur = new ArrayList<Sommet>();
+
+		if (!sommet.isMarque()) {
+			sommet.setMarque(true);
+			listeLargeur.add(sommet);
+		}
+
+		for (int i = 0; i < listeLargeur.size(); i++) {
+			for (Sommet s : this.getVoisinBySommet(listeLargeur.get(i))) {
+				if (!s.isMarque()) {
+					s.setMarque(true);
+					listeLargeur.add(s);
+				}
+			}
+		}
+
+		return listeLargeur;
+	}
+
+	public String sommetsToString() {
+		StringBuilder str = new StringBuilder("Sommets = [");
+		for (int i = 0; i < this.nombreSommet; i++) {
+			str.append(this.sommets[i].toString() + ", ");
+		}
+		str.append("FIN]");
+		return str.toString();
+	}
+
+	public String aretesToString() {
+		StringBuilder str = new StringBuilder("Sommets = [");
+		for (int i = 0; i < this.nombreArete; i++) {
+			str.append(this.aretes[i].toString() + ", ");
+		}
+		str.append("FIN]");
+		return str.toString();
+	}
+
+	public void resetMarquage() {
+		for (int i = 0; i < this.nombreSommet; i++) {
+			this.sommets[i].setMarque(false);
+		}
+	}
 }
