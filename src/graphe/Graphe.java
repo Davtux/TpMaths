@@ -7,8 +7,8 @@ import lombok.Getter;
 
 public class Graphe {
 	static final int MAX_SOMMET = 52;
-	private int nombreSommet;
-	private int nombreArete;
+	private @Getter int nombreSommet;
+	private @Getter int nombreArete;
 	private @Getter final Sommet sommets[];
 	private @Getter final Arete aretes[];
 	private @Getter final boolean matriceAdjacence[][];

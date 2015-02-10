@@ -2,6 +2,8 @@ package graphe;
 
 import java.util.Scanner;
 
+import drawer.Drawer;
+
 public class TestGraphe {
 
 	private final Graphe graphe;
@@ -117,6 +119,10 @@ public class TestGraphe {
 
 				graphe.resetMarquage();
 				break;
+				
+			case 6:
+				new Drawer(graphe);
+				break;
 
 			default:
 				System.err.println("Choix non reconnu");
@@ -133,6 +139,7 @@ public class TestGraphe {
 		System.out.println("3. Voisins d'un sommet");
 		System.out.println("4. Parcours en profondeur");
 		System.out.println("5. Parcours en largeur");
+		System.out.println("6. Afficher le graphe");
 	}
 
 	public static void main(String[] args) {
