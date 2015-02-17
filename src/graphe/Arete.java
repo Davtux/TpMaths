@@ -10,7 +10,7 @@ public @AllArgsConstructor class Arete {
 
 	@Override
 	public String toString() {
-		return "Arete [initial=" + initial + ", fin=" + fin + ", valeur="
+		return "Arete [" + initial + " - " + fin + " : "
 				+ valeur + "]";
 	}
 

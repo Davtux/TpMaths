@@ -30,10 +30,12 @@ public class TestGraphe {
 		graphe.addSommet(D);
 		graphe.addSommet(E);
 
-		graphe.addArete(new Arete(A, B, 0));
-		graphe.addArete(new Arete(A, C, 0));
-		graphe.addArete(new Arete(B, D, 0));
-		graphe.addArete(new Arete(B, E, 0));
+		graphe.addArete(new Arete(A, B, 2));
+		graphe.addArete(new Arete(A, C, 4));
+		graphe.addArete(new Arete(B, D, 6));
+		graphe.addArete(new Arete(B, E, 1));
+		graphe.addArete(new Arete(D, E, 3));
+		graphe.addArete(new Arete(E, C, 5));
 	}
 
 	private void run() {
@@ -101,7 +103,7 @@ public class TestGraphe {
 					System.err.println("Le sommet n'existe pas…");
 				else
 					System.out.println("Profondeur : "
-							+ graphe.parcoursEnProfondeur(sommet));
+							+ Algorithme.parcoursEnProfondeur(graphe, sommet));
 
 				graphe.resetMarquage();
 				break;
@@ -115,13 +117,26 @@ public class TestGraphe {
 					System.err.println("Le sommet n'existe pas…");
 				else
 					System.out.println("Largeur : "
-							+ graphe.parcoursEnLargeur(sommet));
+							+ Algorithme.parcoursEnLargeur(graphe, sommet));
 
 				graphe.resetMarquage();
 				break;
-				
+
 			case 6:
 				new Drawer(graphe);
+				break;
+
+			case 7:
+				final Graphe g = new Graphe();
+
+				for (Sommet s : graphe.getSommets())
+					g.addSommet(s);
+
+				for (Arete a : Algorithme.Sollin(graphe))
+					g.addArete(a);
+
+				System.out.println(g.aretesToString());
+				new Drawer(g);
 				break;
 
 			default:
@@ -140,6 +155,7 @@ public class TestGraphe {
 		System.out.println("4. Parcours en profondeur");
 		System.out.println("5. Parcours en largeur");
 		System.out.println("6. Afficher le graphe");
+		System.out.println("7. Couverture de Sollin");
 	}
 
 	public static void main(String[] args) {

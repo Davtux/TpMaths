@@ -11,7 +11,6 @@ public class Graphe {
 	private @Getter int nombreArete;
 	private @Getter final Sommet sommets[];
 	private @Getter final Arete aretes[];
-	private @Getter final boolean matriceAdjacence[][];
 
 	public Graphe() {
 		super();
@@ -19,7 +18,6 @@ public class Graphe {
 		this.aretes = new Arete[100];
 		this.nombreArete = 0;
 		this.nombreSommet = 0;
-		this.matriceAdjacence = new boolean[MAX_SOMMET][MAX_SOMMET];
 	}
 
 	public void addSommet(Sommet sommet) {
@@ -30,15 +28,6 @@ public class Graphe {
 	public void addArete(Arete arete) {
 		this.aretes[this.nombreArete] = arete;
 		this.nombreArete += 1;
-		this.majMatrice(arete.getInitial(), arete.getFin());
-		this.majMatrice(arete.getFin(), arete.getInitial());
-	}
-
-	public void majMatrice(Sommet initial, Sommet fin) {
-		int idInitial = getIdSommetByNom(initial.getNom());
-		int idFin = getIdSommetByNom(fin.getNom());
-
-		this.matriceAdjacence[idInitial][idFin] = true;
 	}
 
 	public int getIdSommetByNom(String s) {
@@ -63,23 +52,17 @@ public class Graphe {
 		return null;
 	}
 
-	public Arete[] getAreteBySommet(Sommet s) {
-		int taille = 0;
-		for (int i = 0; i < this.aretes.length; i++) {
-			if (this.aretes[i].getInitial().equals(s)) {
-				taille++;
-			}
-		}
-		Arete arete[] = new Arete[taille];
-		taille = 0;
+	public List<Arete> getAreteBySommet(Sommet sommet) {
+		List<Arete> aretes_sommet = new ArrayList<Arete>();
 
-		for (int i = 0; i < this.aretes.length; i++) {
-			if (this.aretes[i].getInitial().equals(s)) {
-				arete[taille] = this.aretes[i];
-				taille++;
+		for (int i = 0; i < this.nombreArete; i++) {
+			if (this.aretes[i].getInitial() == sommet
+					|| this.aretes[i].getFin() == sommet) {
+				aretes_sommet.add(this.aretes[i]);
 			}
 		}
-		return arete;
+
+		return aretes_sommet;
 	}
 
 	public List<Sommet> getVoisinBySommet(Sommet sommet) {
@@ -96,39 +79,6 @@ public class Graphe {
 		return voisins;
 	}
 
-	public List<Sommet> parcoursEnProfondeur(Sommet sommet) {
-		sommet.setMarque(true);
-		List<Sommet> listeProfondeur = new ArrayList<Sommet>();
-		listeProfondeur.add(sommet);
-
-		for (Sommet s : this.getVoisinBySommet(sommet)) {
-			if (!s.isMarque()) {
-				listeProfondeur.addAll(this.parcoursEnProfondeur(s));
-			}
-		}
-		return listeProfondeur;
-	}
-
-	public List<Sommet> parcoursEnLargeur(Sommet sommet) {
-		List<Sommet> listeLargeur = new ArrayList<Sommet>();
-
-		if (!sommet.isMarque()) {
-			sommet.setMarque(true);
-			listeLargeur.add(sommet);
-		}
-
-		for (int i = 0; i < listeLargeur.size(); i++) {
-			for (Sommet s : this.getVoisinBySommet(listeLargeur.get(i))) {
-				if (!s.isMarque()) {
-					s.setMarque(true);
-					listeLargeur.add(s);
-				}
-			}
-		}
-
-		return listeLargeur;
-	}
-
 	public String sommetsToString() {
 		StringBuilder str = new StringBuilder("Sommets = [");
 		for (int i = 0; i < this.nombreSommet; i++) {
@@ -139,7 +89,7 @@ public class Graphe {
 	}
 
 	public String aretesToString() {
-		StringBuilder str = new StringBuilder("Sommets = [");
+		StringBuilder str = new StringBuilder("Aretes = [");
 		for (int i = 0; i < this.nombreArete; i++) {
 			str.append(this.aretes[i].toString() + ", ");
 		}
