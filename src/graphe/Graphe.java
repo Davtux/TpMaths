@@ -52,7 +52,7 @@ public class Graphe {
 		return null;
 	}
 
-	public List<Arete> getAreteBySommet(Sommet sommet) {
+	public List<Arete> getAretesBySommet(Sommet sommet) {
 		List<Arete> aretes_sommet = new ArrayList<Arete>();
 
 		for (int i = 0; i < this.nombreArete; i++) {
@@ -63,6 +63,15 @@ public class Graphe {
 		}
 
 		return aretes_sommet;
+	}
+
+	public Arete getAreteBySommets(Sommet sommet1, Sommet sommet2) {
+		for (Arete a : this.getAretesBySommet(sommet1)) {
+			if (a.getInitial() == sommet2 || a.getFin() == sommet2)
+				return a;
+		}
+
+		return null;
 	}
 
 	public List<Sommet> getVoisinBySommet(Sommet sommet) {
@@ -89,9 +98,9 @@ public class Graphe {
 	}
 
 	public String aretesToString() {
-		StringBuilder str = new StringBuilder("Aretes = [");
+		StringBuilder str = new StringBuilder("Aretes = [\n");
 		for (int i = 0; i < this.nombreArete; i++) {
-			str.append(this.aretes[i].toString() + ", ");
+			str.append(this.aretes[i].toString() + ", \n");
 		}
 		str.append("FIN]");
 		return str.toString();

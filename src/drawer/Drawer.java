@@ -1,7 +1,6 @@
 package drawer;
 
 import graphe.Algorithme;
-import graphe.Arete;
 import graphe.Graphe;
 import graphe.Sommet;
 
@@ -13,17 +12,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 
-public class Drawer extends JFrame {
+public class Drawer extends JDialog {
 	private static final int WINDOW_HEIGTH = 800;
 	private static final int WINDOW_WIDTH = 700;
 	private static final long serialVersionUID = 4996533613474318134L;
 	private final Graphe graphe;
 
 	public Drawer(Graphe graphe) {
-		super("Math : graphe");
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		// super("Math : graphe");
+		this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
 		this.graphe = graphe;
 
@@ -39,6 +38,7 @@ public class Drawer extends JFrame {
 		// draw the graph
 		double x = WINDOW_WIDTH / 2;
 		double y = WINDOW_HEIGTH / 15;
+
 		List<Sommet> sommets = Algorithme.parcoursEnLargeur(graphe,
 				graphe.getSommets()[0]);
 		Map<Sommet, Point2D.Double> painted_sommets = new HashMap<Sommet, Point2D.Double>();
@@ -48,12 +48,13 @@ public class Drawer extends JFrame {
 			Point2D.Double point_base;
 			if (!painted_sommets.containsKey(sommet)) {
 				point_base = new Point2D.Double(x, y);
-				graphics2d.drawString(sommet.getNom(), (int) point_base.x,
-						(int) point_base.y);
+				graphics2d.drawString(sommet.getNom(), (int) point_base.x - 10,
+						(int) point_base.y - 10);
 				painted_sommets.put(sommet, point_base);
 				y += (WINDOW_HEIGTH / 15);
 			} else {
 				point_base = painted_sommets.get(sommet);
+				y += (WINDOW_HEIGTH / 15);
 			}
 
 			List<Sommet> voisins = graphe.getVoisinBySommet(sommet);
@@ -77,17 +78,16 @@ public class Drawer extends JFrame {
 						(int) point.y);
 				Line2D.Double line = new Line2D.Double(point_base, point);
 				graphics2d.draw(line);
-				for (Arete a : graphe.getAreteBySommet(sommet)) {
-					graphics2d.drawString(String.valueOf(a.getValeur()),
-							(int) ((line.x1 + line.x2 + 20) / 2),
-							(int) ((line.y1 + line.y2 + 20) / 2));
-					break;
-				}
-				x += (WINDOW_WIDTH / voisins.size());
+				graphics2d.drawString(String.valueOf(graphe.getAreteBySommets(
+						sommet, voisin).getValeur()),
+						(int) ((line.x1 + line.x2 + 20) / 2), (int) ((line.y1
+								+ line.y2 + 20) / 2));
+				x *= 2;
 			}
 
 			x = WINDOW_WIDTH / 2;
-			y += (WINDOW_HEIGTH / 15);
+			// if (painted_sommets.get(sommets.get(i + 1)).y != y)
+			// y += (WINDOW_HEIGTH / 15);
 		}
 	}
 }

@@ -19,7 +19,7 @@ public class Sommet {
 
 	@Override
 	public String toString() {
-		return "Sommet [" + nom + ", " + marque + "]";
+		return "Sommet [" + nom + "]";
 	}
 
 }
